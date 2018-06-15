@@ -1,6 +1,6 @@
-# Neel's music downloader
+# pyMusic
 
--pyMusic-
+-an easy music search and download python app with album art-
 
 Setup :
 * `pip install -r requirements.txt`
