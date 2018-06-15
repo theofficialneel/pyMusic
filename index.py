@@ -16,6 +16,9 @@ from mutagen.id3 import ID3, APIC, error
 
 path = "./songs/"
 
+def asciiCheck(s):
+	return all(ord(c)<128 for  c in s)
+
 def albumArtGen(name):
 	album = name + " Album Art"
 	url = ("https://www.google.com/search?q=" +
@@ -67,6 +70,10 @@ while 1:
 		 print str(i)+" : "+yt_title
 
 		chosenLinkIndex = input("Pick (1-3) : ")
+
+		while(not asciiCheck(yt3titles[chosenLinkIndex-1])):
+			print "The name "+yt3titles[chosenLinkIndex-1]+" seems to have a non ascii character"
+			yt3titles[chosenLinkIndex-1] = raw_input("Please enter a new name : ")
 
 		ydl_opts = {
 			'format': 'bestaudio/best',
