@@ -8,6 +8,7 @@ import json
 from urllib2 import urlopen, Request
 from urllib2 import quote
 import urllib
+import readline
 
 import youtube_dl
 
@@ -72,7 +73,7 @@ while 1:
 		chosenLinkIndex = input("Pick (1-3) : ")
 
 		while(not asciiCheck(yt3titles[chosenLinkIndex-1])):
-			print "The name "+yt3titles[chosenLinkIndex-1]+" seems to have a non ascii character"
+			print "The Title \""+yt3titles[chosenLinkIndex-1]+"\" seems to have a non ascii character"
 			yt3titles[chosenLinkIndex-1] = raw_input("Please enter a new name : ")
 
 		ydl_opts = {
