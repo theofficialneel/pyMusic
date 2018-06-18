@@ -54,12 +54,14 @@ while 1:
 
 		soupeddata = BeautifulSoup(sb_get.content, "html.parser")
 		yt_links = soupeddata.find_all("a", class_ = "yt-uix-tile-link")
+		yt_times = soupeddata.find_all("span", {'class' : "accessible-description"})
 		i = 0
 		yt3links = []
 		yt3titles = []
 		for x in yt_links:
 		 yt_href = x.get("href")
 		 yt_title = x.get("title")
+		 yt_duration = yt_times[i].text
 		 if "watch?" not in yt_href:
 			continue
 		 i = i + 1
@@ -68,7 +70,7 @@ while 1:
 		 yt_final = scrape_url + yt_href
 		 yt3titles.append(yt_title)
 		 yt3links.append(yt_final)
-		 print str(i)+" : "+yt_title
+		 print str(i)+" : "+yt_title+str(yt_duration)
 
 		chosenLinkIndex = input("Pick (1-3) : ")
 
