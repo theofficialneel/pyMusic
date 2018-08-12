@@ -9,13 +9,17 @@ from urllib2 import urlopen, Request
 from urllib2 import quote
 import urllib
 import readline
+from ConfigParser import SafeConfigParser
 
 import youtube_dl
 
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC, error
 
-path = "./songs/"
+# path = "./songs/"
+parser = SafeConfigParser()
+parser.read('settings.ini')
+path = parser.get('SETTINGS', 'value')
 
 def asciiCheck(s):
 	return all(ord(c)<128 for  c in s)
@@ -29,8 +33,6 @@ def albumArtGen(name):
 	          AppleWebKit/537.36 (KHTML,like Gecko)
 	          Chrome/43.0.2357.134 Safari/537.36'''
 	         }
-
-
 
 	soup = BeautifulSoup(urlopen(Request(url, headers=header)), "html.parser")
 
@@ -112,8 +114,14 @@ while 1:
 		os.remove("temp-album-art.jpg")
 
 	elif menu_input == 2:
+		
 		print "Current path : "+path
-		path = (raw_input("Enter new path : ") or "./songs/")
+		temp_path = (raw_input("Enter new path : ") or path)
+		
+		parser.set('SETTINGS', 'value', temp_path)
+		with open('settings.ini', 'wb') as configfile:
+			parser.write(configfile)
+		path = temp_path
 
 	else:
 		break
