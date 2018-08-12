@@ -8,7 +8,7 @@ import json
 from urllib2 import urlopen, Request
 from urllib2 import quote
 import urllib
-import readline
+#import readline
 from ConfigParser import SafeConfigParser
 
 import youtube_dl
