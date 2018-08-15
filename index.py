@@ -61,18 +61,18 @@ while 1:
 		yt3links = []
 		yt3titles = []
 		for x in yt_links:
-		 yt_href = x.get("href")
-		 yt_title = x.get("title")
-		 yt_duration = yt_times[i].text
-		 if "watch?" not in yt_href:
-			continue
-		 i = i + 1
-		 if i > 3:
-			break
-		 yt_final = scrape_url + yt_href
-		 yt3titles.append(yt_title)
-		 yt3links.append(yt_final)
-		 print str(i)+" : "+yt_title+str(yt_duration)
+			yt_href = x.get("href")
+			yt_title = x.get("title")
+			yt_duration = yt_times[i].text
+			if "watch?" not in yt_href:
+				continue
+			i = i + 1
+			if i > 3:
+				break
+			yt_final = scrape_url + yt_href
+			yt3titles.append(yt_title)
+			yt3links.append(yt_final)
+			print str(i)+" : "+yt_title+str(yt_duration)
 
 		chosenLinkIndex = input("Pick (1-3) : ")
 
@@ -118,9 +118,17 @@ while 1:
 		print "Current path : "+path
 		temp_path = (raw_input("Enter new path : ") or path)
 		
+		if not os.path.isdir(temp_path):
+			print "Sorry the path you typed doesnt exist."
+			continue
+
 		parser.set('SETTINGS', 'value', temp_path)
 		with open('settings.ini', 'wb') as configfile:
 			parser.write(configfile)
+			
+		if path!=temp_path:
+			print "Path changed"
+
 		path = temp_path
 
 	else:
