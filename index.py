@@ -57,6 +57,7 @@ while 1:
 		soupeddata = BeautifulSoup(sb_get.content, "html.parser")
 		yt_links = soupeddata.find_all("a", class_ = "yt-uix-tile-link")
 		yt_times = soupeddata.find_all("span", {'class' : "accessible-description"})
+		yt_meta = soupeddata.find_all("ul", {'class' : "yt-lockup-meta-info"})
 		i = 0
 		yt3links = []
 		yt3titles = []
@@ -64,6 +65,7 @@ while 1:
 			yt_href = x.get("href")
 			yt_title = x.get("title")
 			yt_duration = yt_times[i].text
+			#yt_views = yt_meta[i].find_all("li")
 			if "watch?" not in yt_href:
 				continue
 			i = i + 1
