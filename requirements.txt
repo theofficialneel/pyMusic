@@ -1,5 +1,5 @@
 future==0.16.0
 beautifulsoup4==4.6.0
-youtube-dl==2018.6.4
+youtube-dl==2019.1.7
 requests==2.18.4
 mutagen==1.40.0
