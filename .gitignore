@@ -1,1 +1,3 @@
 /songs/*.mp3
+.vscode/
+.idea/

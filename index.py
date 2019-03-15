@@ -1,18 +1,14 @@
 from __future__ import unicode_literals
 
 from bs4 import BeautifulSoup
-
 import os
 import requests
 import json
-from urllib2 import urlopen, Request
-from urllib2 import quote
+from urllib2 import urlopen, Request, quote
 import urllib
-#import readline
 from ConfigParser import SafeConfigParser
 
 import youtube_dl
-
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC, error
 
@@ -26,13 +22,13 @@ def asciiCheck(s):
 
 def albumArtGen(name):
 	album = name + " Album Art"
-	url = ("https://www.google.com/search?q=" +
-	       quote(album.encode('utf-8')) + "&source=lnms&tbm=isch")
-	header = {'User-Agent':
-	          '''Mozilla/5.0 (Windows NT 6.1; WOW64)
-	          AppleWebKit/537.36 (KHTML,like Gecko)
-	          Chrome/43.0.2357.134 Safari/537.36'''
-	         }
+	url = ("https://www.google.com/search?q=" + quote(album.encode('utf-8')) + "&source=lnms&tbm=isch")
+	header = {
+		'User-Agent':
+			'''Mozilla/5.0 (Windows NT 6.1; WOW64)
+			AppleWebKit/537.36 (KHTML,like Gecko)
+			Chrome/43.0.2357.134 Safari/537.36'''
+	}
 
 	soup = BeautifulSoup(urlopen(Request(url, headers=header)), "html.parser")
 
@@ -44,7 +40,7 @@ def albumArtGen(name):
 
 
 while 1:
-	menu_input = input("\nMenu :\n1 : Query \n2 : Change Destination\n")
+	menu_input = input("\nMenu :\n[1] Query \n[2] Change Destination\n")
 
 	if menu_input == 1:
 		scrape_url="https://www.youtube.com"
@@ -56,27 +52,30 @@ while 1:
 
 		soupeddata = BeautifulSoup(sb_get.content, "html.parser")
 		yt_links = soupeddata.find_all("a", class_ = "yt-uix-tile-link")
-		yt_times = soupeddata.find_all("span", {'class' : "accessible-description"})
+		yt_times = soupeddata.find_all("span", {'class' : "video-time"})
 		yt_meta = soupeddata.find_all("ul", {'class' : "yt-lockup-meta-info"})
 		i = 0
+		j = 0
 		yt3links = []
 		yt3titles = []
 		for x in yt_links:
 			yt_href = x.get("href")
 			yt_title = x.get("title")
-			yt_duration = yt_times[i].text
-			#yt_views = yt_meta[i].find_all("li")
+			yt_duration = yt_times[j].text
+			yt_views = yt_meta[i].find_all("li")
+			i = i + 1
 			if "watch?" not in yt_href:
 				continue
-			i = i + 1
-			if i > 3:
+			j = j + 1
+			if j > 3:
 				break
 			yt_final = scrape_url + yt_href
 			yt3titles.append(yt_title)
 			yt3links.append(yt_final)
-			print str(i)+" : "+yt_title+str(yt_duration)
+			print "["+str(j)+"] "+yt_title+" ["+str(yt_duration)+"]"
+			print "<"+str(yt_views[1].text)+"> - <"+str(yt_views[0].text)+">\n"
 
-		chosenLinkIndex = input("Pick (1-3) : ")
+		chosenLinkIndex = input("Pick [1-3] ")
 
 		while(not asciiCheck(yt3titles[chosenLinkIndex-1])):
 			print "The Title \""+yt3titles[chosenLinkIndex-1]+"\" seems to have a non ascii character"
