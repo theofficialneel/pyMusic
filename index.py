@@ -53,7 +53,7 @@ while 1:
 		soupeddata = BeautifulSoup(sb_get.content, "html.parser")
 		yt_links = soupeddata.find_all("a", class_ = "yt-uix-tile-link")
 		yt_times = soupeddata.find_all("span", {'class' : "video-time"})
-		yt_meta = soupeddata.find_all("ul", {'class' : "yt-lockup-meta-info"})
+		yt_meta_data = soupeddata.find_all("ul", {'class' : "yt-lockup-meta-info"})
 		i = 0
 		j = 0
 		yt3links = []
@@ -61,8 +61,13 @@ while 1:
 		for x in yt_links:
 			yt_href = x.get("href")
 			yt_title = x.get("title")
-			yt_duration = yt_times[j].text
-			yt_views = yt_meta[i].find_all("li")
+			yt_duration = str(yt_times[j].text)
+			yt_meta = yt_meta_data[i].find_all("li")
+			yt_views = "-"
+			yt_time_stamp = "-"
+			if len(yt_meta) >= 2:
+				yt_time_stamp = str(yt_meta[0].text)
+				yt_views = str(yt_meta[1].text) 
 			i = i + 1
 			if "watch?" not in yt_href:
 				continue
@@ -72,8 +77,8 @@ while 1:
 			yt_final = scrape_url + yt_href
 			yt3titles.append(yt_title)
 			yt3links.append(yt_final)
-			print "["+str(j)+"] "+yt_title+" ["+str(yt_duration)+"]"
-			print "<"+str(yt_views[1].text)+"> - <"+str(yt_views[0].text)+">\n"
+			print "["+str(j)+"] "+yt_title+" ["+yt_duration+"]"
+			print "<"+yt_views+"> - <"+yt_time_stamp+">\n"
 
 		chosenLinkIndex = input("Pick [1-3] ")
 
