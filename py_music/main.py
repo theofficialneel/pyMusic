@@ -8,14 +8,14 @@ from urllib2 import urlopen, Request, quote
 import urllib
 from ConfigParser import SafeConfigParser
 
+from path import getPath, checkPath, changePath
+
 import youtube_dl
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC, error
 
 # path = "./songs/"
-parser = SafeConfigParser()
-parser.read('../settings.ini')
-path = parser.get('SETTINGS', 'value')
+path = getPath()
 
 def asciiCheck(s):
 	return all(ord(c)<128 for  c in s)
@@ -40,7 +40,7 @@ def albumArtGen(name):
 
 
 while 1:
-	menu_input = input("\nMenu :\n[1] Query \n[2] Change Dest\n")
+	menu_input = input("\nMenu :\n[1] Query Music \n[2] Change Dest\n")
 
 	if menu_input == 1:
 		scrape_url="https://www.youtube.com"
@@ -83,8 +83,8 @@ while 1:
 		chosenLinkIndex = input("Pick [1-3] ")
 
 		while(not asciiCheck(yt3titles[chosenLinkIndex-1])):
-			print "The Title \""+yt3titles[chosenLinkIndex-1]+"\" seems to have a non ascii character"
-			yt3titles[chosenLinkIndex-1] = raw_input("Please enter a new name : ")
+			print "Error: \""+yt3titles[chosenLinkIndex-1]+"\" has non-ascii characters"
+			yt3titles[chosenLinkIndex-1] = raw_input("Enter new name : ")
 
 		ydl_opts = {
 			'format': 'bestaudio/best',
@@ -120,22 +120,16 @@ while 1:
 		os.remove("temp-album-art.jpg")
 
 	elif menu_input == 2:
-		
 		print "Current path : " + path
 		temp_path = (raw_input("Enter new path : ") or path)
-		
-		if not os.path.isdir(temp_path):
-			print "Sorry the path you typed doesnt exist."
-			continue
-
-		parser.set('SETTINGS', 'value', temp_path)
-		with open('../settings.ini', 'wb') as configfile:
-			parser.write(configfile)
 			
 		if path != temp_path:
-			print "Path changed"
-
-		path = temp_path
+			if not checkPath(path):
+				print "Error: path doesn't exist"
+				continue
+			changePath(temp_path)
+			path = temp_path
+			print "Success: Path changed"
 
 	else:
 		break
