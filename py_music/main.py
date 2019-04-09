@@ -14,7 +14,7 @@ from mutagen.id3 import ID3, APIC, error
 
 # path = "./songs/"
 parser = SafeConfigParser()
-parser.read('settings.ini')
+parser.read('../settings.ini')
 path = parser.get('SETTINGS', 'value')
 
 def asciiCheck(s):
@@ -40,7 +40,7 @@ def albumArtGen(name):
 
 
 while 1:
-	menu_input = input("\nMenu :\n[1] Query \n[2] Change Destination\n")
+	menu_input = input("\nMenu :\n[1] Query \n[2] Change Dest\n")
 
 	if menu_input == 1:
 		scrape_url="https://www.youtube.com"
@@ -121,7 +121,7 @@ while 1:
 
 	elif menu_input == 2:
 		
-		print "Current path : "+path
+		print "Current path : " + path
 		temp_path = (raw_input("Enter new path : ") or path)
 		
 		if not os.path.isdir(temp_path):
@@ -129,10 +129,10 @@ while 1:
 			continue
 
 		parser.set('SETTINGS', 'value', temp_path)
-		with open('settings.ini', 'wb') as configfile:
+		with open('../settings.ini', 'wb') as configfile:
 			parser.write(configfile)
 			
-		if path!=temp_path:
+		if path != temp_path:
 			print "Path changed"
 
 		path = temp_path
