@@ -1,43 +1,17 @@
 from __future__ import unicode_literals
+import requests
 
 from bs4 import BeautifulSoup
-import os
-import requests
-import json
-from urllib2 import urlopen, Request, quote
-import urllib
-from ConfigParser import SafeConfigParser
+import youtube_dl
 
 from path import getPath, checkPath, changePath
-
-import youtube_dl
-from mutagen.mp3 import MP3
-from mutagen.id3 import ID3, APIC, error
+from album import addAlbumArt
 
 # path = "./songs/"
 path = getPath()
 
 def asciiCheck(s):
 	return all(ord(c)<128 for  c in s)
-
-def albumArtGen(name):
-	album = name + " Album Art"
-	url = ("https://www.google.com/search?q=" + quote(album.encode('utf-8')) + "&source=lnms&tbm=isch")
-	header = {
-		'User-Agent':
-			'''Mozilla/5.0 (Windows NT 6.1; WOW64)
-			AppleWebKit/537.36 (KHTML,like Gecko)
-			Chrome/43.0.2357.134 Safari/537.36'''
-	}
-
-	soup = BeautifulSoup(urlopen(Request(url, headers=header)), "html.parser")
-
-	albumart_div = soup.find("div", {"class": "rg_meta"})
-	albumart = json.loads(albumart_div.text)["ou"]
-
-	urllib.urlretrieve(albumart, "temp-album-art.jpg")
-
-
 
 while 1:
 	menu_input = input("\nMenu :\n[1] Query Music \n[2] Change Dest\n")
@@ -98,26 +72,7 @@ while 1:
 		with youtube_dl.YoutubeDL(ydl_opts) as ydl:
 			ydl.download([yt3links[chosenLinkIndex-1]])
 
-		albumArtGen(yt3titles[chosenLinkIndex-1])
-
-		audio = MP3(path+yt3titles[chosenLinkIndex-1]+'.mp3', ID3=ID3)
-		try:
-		    audio.add_tags()
-		except error:
-		    pass
-
-		audio.tags.add(
-		    APIC(
-		        encoding=3, # 3 is for utf-8
-		        mime='image/png', # image/jpeg or image/png
-		        type=3, # 3 is for the cover image
-		        desc=u'Cover',
-		        data=open('temp-album-art.jpg').read()
-		    )
-		)
-		audio.save()
-
-		os.remove("temp-album-art.jpg")
+		addAlbumArt(path, yt3titles[chosenLinkIndex-1])
 
 	elif menu_input == 2:
 		print "Current path : " + path
