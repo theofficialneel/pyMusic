@@ -11,16 +11,21 @@ temp_name = "temp_file.jpg"
 
 def makeAlbumFile(song_name):
 	album_query = song_name + " album art"
-	url = ("https://www.google.com/search?q=" + quote(album_query.encode('utf-8')) + "&source=lnms&tbm=isch")
-	header = {
-		'User-Agent':
+	count = 3
+	while count:
+		url = ("https://www.google.com/search?q=" + quote(album_query.encode('utf-8')) + "&source=lnms&tbm=isch")
+		header = {
+			'User-Agent':
 			'''Mozilla/5.0 (Windows NT 6.1; WOW64)
 			AppleWebKit/537.36 (KHTML,like Gecko)
 			Chrome/43.0.2357.134 Safari/537.36'''
-	}
-	soup = BeautifulSoup(urlopen(Request(url, headers=header)), "html.parser")
-
-	album_art_div = soup.find("div", {"class": "rg_meta"})
+		}
+		soup = BeautifulSoup(urlopen(Request(url, headers=header)), "html.parser")
+		album_art_div = soup.find("div", {"class": "rg_meta"})
+		if album_art_div:
+			count = count - 1
+		else:
+			break
 	album_art = json.loads(album_art_div.text)["ou"]
 	urllib.urlretrieve(album_art, temp_name)
 

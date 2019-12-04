@@ -1,9 +1,9 @@
 from __future__ import unicode_literals
 import youtube_dl
 
-from album import addAlbumArt
 from path import getPath, changePath
 from query import queryMusic
+from spotify import metadataGen
 
 # path = "./songs/"
 path = getPath()
@@ -41,7 +41,7 @@ while 1:
 		with youtube_dl.YoutubeDL(ydl_opts) as ydl:
 			ydl.download([yt_link])
 
-		addAlbumArt(path, yt_title)
+		metadataGen(path, yt_title)
 
 	elif menu_input == 2:
 		print "Current path : " + path

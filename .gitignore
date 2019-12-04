@@ -1,5 +1,7 @@
 /songs/*.mp3
+settings.ini
 .vscode/
 .idea/
 *.pyc
 *.jpg
+*.txt
