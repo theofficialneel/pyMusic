@@ -56,18 +56,12 @@ def spotifySearch(query_name):
     # print(json.dumps(spot_obj, indent=4, sort_keys=False))
     return spot_obj
 
-def modifyQueryName(query):
-	x = re.sub("[\(\[].*?[\)\]]", "", query)
-	i = x.lower().find("ft.")
-	j = x.lower().find("feat.")
-	i = len(x) if i==-1 else i
-	j = len(x) if j==-1 else j
-	x = x[:i][:j]
-	return x
-
 def metadataGen(path, filename):
-	x = modifyQueryName(filename)
-	s_obj = spotifySearch(x)
+	new_filename = removeTags(filename)
+	os.rename(os.path.join(path, filename+".mp3"), os.path.join(path, new_filename+".mp3"))
+	filename = new_filename
+	print "Searching : " + filename 
+	s_obj = spotifySearch(filename)
 	print(json.dumps(s_obj, indent=4, sort_keys=False))
 
 	if s_obj["image_url"] == "":
