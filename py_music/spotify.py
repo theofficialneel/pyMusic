@@ -10,6 +10,7 @@ from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC, TIT2, TPE1, TALB, TDRC, TYER, TCON, error
 
 from album import addAlbumArt
+from metascript import removeTags
 
 curr_path = os.path.dirname(__file__)
 par_path = os.path.abspath(os.path.join(curr_path, os.pardir))
@@ -60,31 +61,89 @@ def metadataGen(path, filename):
 	new_filename = removeTags(filename)
 	os.rename(os.path.join(path, filename+".mp3"), os.path.join(path, new_filename+".mp3"))
 	filename = new_filename
-	print "Searching : " + filename 
-	s_obj = spotifySearch(filename)
-	print(json.dumps(s_obj, indent=4, sort_keys=False))
+	s_query = filename
 
-	if s_obj["image_url"] == "":
-		addAlbumArt(path, filename)
-	else:
-		audio = MP3(path + filename + '.mp3', ID3=ID3)
-		try:
-			audio.add_tags()
-		except error:
-			pass
-		audio.tags.add(TIT2(text=filename))
-		audio.tags.add(TPE1(text=s_obj["artists"]))
-		audio.tags.add(TALB(text=s_obj["album"]))
-		audio.tags.add(TDRC(text=(s_obj["release_date"][:4])))
-		audio.tags.add(TYER(text=(s_obj["release_date"][:4])))
-		audio.tags.add(TCON(text=s_obj["genres"]))
-		audio.tags.add(
-			APIC(
-				encoding=3, # 3 is for utf-8
-				mime='image/png', # image/jpeg or image/png
-				type=3, # 3 is for the cover image
-				desc=u'Cover',
-				data=urlopen(s_obj["image_url"]).read()
+	audio = MP3(path + filename + '.mp3', ID3=ID3)
+	try:
+		audio.add_tags()
+	except error:
+		pass
+
+	while 1:
+		print "Searching : " + s_query 
+		s_obj = spotifySearch(s_query)
+		print(json.dumps(s_obj, indent=4, sort_keys=False))
+		if s_obj["image_url"] == "":
+			s_query = raw_input("Couldnt find in spotify, give a different name : ")
+			if s_query == "":
+				title = (raw_input("Enter new title : ") or filename)
+				artist = raw_input("Enter artist : ")
+				audio.tags.add(TIT2(text=title))
+				audio.tags.add(TPE1(text=artist))
+				audio.save()
+				addAlbumArt(path, filename)
+				break
+		else:
+			audio.tags.add(TIT2(text=filename))
+			audio.tags.add(TPE1(text=s_obj["artists"]))
+			audio.tags.add(TALB(text=s_obj["album"]))
+			audio.tags.add(TDRC(text=(s_obj["release_date"][:4])))
+			audio.tags.add(TYER(text=(s_obj["release_date"][:4])))
+			audio.tags.add(TCON(text=s_obj["genres"]))
+			audio.tags.add(
+				APIC(
+					encoding=3, # 3 is for utf-8
+					mime='image/png', # image/jpeg or image/png
+					type=3, # 3 is for the cover image
+					desc=u'Cover',
+					data=urlopen(s_obj["image_url"]).read()
+				)
 			)
-		)
-		audio.save()
+			audio.save()
+			break
+
+def fixMetadata(path, filename):
+	with open(filename) as fpin:
+		for line in fpin:
+			mp3file = line.strip()
+			audio = MP3(path + mp3file + '.mp3', ID3=ID3)
+			try:
+				audio.add_tags()
+			except error:
+				pass
+			while 1:
+				new_name = raw_input("EDIT>" + mp3file + ">")
+				if new_name == "1" or new_name == "":
+					title = (raw_input("Enter new title : ") or mp3file)
+					artist = raw_input("Enter artist : ")
+					audio.tags.add(TIT2(text=title))
+					audio.tags.add(TPE1(text=artist))
+					audio.save()
+					break
+				s_obj = spotifySearch(new_name)
+				print(json.dumps(s_obj, indent=4, sort_keys=False))
+				if s_obj["image_url"] == "":
+					continue
+				else:
+					opt = raw_input("1 = yes : ")
+					if opt == "1":
+						audio.tags.add(TIT2(text=mp3file))
+						audio.tags.add(TPE1(text=s_obj["artists"]))
+						audio.tags.add(TALB(text=s_obj["album"]))
+						audio.tags.add(TDRC(text=(s_obj["release_date"][:4])))
+						audio.tags.add(TYER(text=(s_obj["release_date"][:4])))
+						audio.tags.add(TCON(text=s_obj["genres"]))
+						audio.tags.add(
+							APIC(
+								encoding=3, # 3 is for utf-8
+								mime='image/png', # image/jpeg or image/png
+								type=3, # 3 is for the cover image
+								desc=u'Cover',
+								data=urlopen(s_obj["image_url"]).read()
+							)
+						)
+						audio.save()
+						break
+
+# fixMetadata("/home/neel/Music/Offline/", "failed.txt")
+# spotifySearch("3lau how you love me")

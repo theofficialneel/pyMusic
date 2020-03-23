@@ -18,8 +18,9 @@ while 1:
 		query_string = raw_input("Enter query : ")
 		yt = queryMusic(query_string)
 		for x in yt:
-			print "["+ x['count'] +"] " + x['title'] + " [" + x['duration'] + "]"
-			print "<" + x['views'] + "> - <" + x['time'] + ">\n"
+			print "["+ x['count'] +"] " + x['title'] 
+			print x['channel'] + " | " + "[" + x['duration'] + "]" 
+			print x['views'] + " | " + x['time'] + "\n"
 
 		index = input("Pick [1-3] ")
 		yt_title = yt[index-1]['title']
