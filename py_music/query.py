@@ -24,16 +24,16 @@ def queryMusic(query_string):
         yt_link_title = link.get("title")
         yt_duration = str(yt_times[j].text)
         yt_channel_a = yt_channel[i].find_all("a")
-        yt_channel_name = yt_channel_a[0].text
         yt_meta = yt_meta_data[i].find_all("li")
         i = i + 1
+        if "watch?" not in yt_link_href or "&list" in yt_link_href:
+            continue
         if len(yt_meta) >= 2:
             yt_time_stamp = str(yt_meta[0].text)
             yt_views = str(yt_meta[1].text)
         else:
             continue
-        if "watch?" not in yt_link_href or "&list" in yt_link_href:
-            continue
+        yt_channel_name = yt_channel_a[0].text
         j = j + 1
         if j > 3:
             break

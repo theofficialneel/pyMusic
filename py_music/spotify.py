@@ -10,7 +10,6 @@ from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC, TIT2, TPE1, TALB, TDRC, TYER, TCON, error
 
 from album import addAlbumArt
-from metascript import removeTags
 
 curr_path = os.path.dirname(__file__)
 par_path = os.path.abspath(os.path.join(curr_path, os.pardir))
@@ -58,11 +57,7 @@ def spotifySearch(query_name):
     return spot_obj
 
 def metadataGen(path, filename):
-	new_filename = removeTags(filename)
-	os.rename(os.path.join(path, filename+".mp3"), os.path.join(path, new_filename+".mp3"))
-	filename = new_filename
 	s_query = filename
-
 	audio = MP3(path + filename + '.mp3', ID3=ID3)
 	try:
 		audio.add_tags()

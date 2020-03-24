@@ -4,6 +4,7 @@ import youtube_dl
 from path import getPath, changePath
 from query import queryMusic
 from spotify import metadataGen
+from metascript import removeTags
 
 # path = "./songs/"
 path = getPath()
@@ -29,6 +30,8 @@ while 1:
 		while(not all(ord(c)<128 for  c in yt_title)):
 			print "Error: \""+yt_title+"\" has non-ascii characters"
 			yt_title = raw_input("Enter new name : ")
+
+		yt_title = removeTags(yt_title)
 
 		ydl_opts = {
 			'format': 'bestaudio/best',
