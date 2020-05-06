@@ -36,6 +36,7 @@ while 1:
 		ydl_opts = {
 			'format': 'bestaudio/best',
 			'outtmpl': path + yt_title + '.%(ext)s',
+            'cachedir': False,
 			'postprocessors': [{
 				'key': 'FFmpegExtractAudio',
 				'preferredcodec': 'mp3',
