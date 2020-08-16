@@ -1,7 +1,6 @@
 import os
 import json
 import urllib
-from urllib2 import urlopen, Request, quote
 from bs4 import BeautifulSoup
 
 from mutagen.mp3 import MP3
@@ -12,14 +11,14 @@ def makeAlbumFile(song_name):
     count = 3
     album_art_div = None
     while count:
-        url = ("https://www.google.com/search?q=" + quote(album_query.encode('utf-8')) + "&source=lnms&tbm=isch")
+        url = ("https://www.google.com/search?q=" + urllib.request.quote(album_query.encode('utf-8')) + "&source=lnms&tbm=isch")
         header = {
             'User-Agent':
             '''Mozilla/5.0 (Windows NT 6.1; WOW64)
             AppleWebKit/537.36 (KHTML,like Gecko)
             Chrome/43.0.2357.134 Safari/537.36'''
         }
-        soup = BeautifulSoup(urlopen(Request(url, headers=header)), "html.parser")
+        soup = BeautifulSoup(urllib.request.urlopen(urllib.request.Request(url, headers=header)), "html.parser")
         album_art_div = soup.find("div", {"class": "rg_meta"})
         if album_art_div:
             album_art = json.loads(album_art_div.text)["ou"]

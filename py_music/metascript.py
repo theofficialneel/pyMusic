@@ -27,11 +27,17 @@ def removeTags(name):
 
     return result
 
+def forceRemoveTags(name):
+    result = re.sub(r'[^A-Za-z0-9 ]+', '', name)
+    result = re.sub("ft", "", result, flags=re.I)
+    result = re.sub("\s+", " ", result).strip()
+    return result
+
 def renameFiles(path):
     for dir, subdirs, files in os.walk(path):
         for f in sorted(files):
             f_new = removeTags(f)
-            print f + " >> " + f_new
+            print(f + " >> " + f_new)
             os.rename(os.path.join(path, f), os.path.join(path, f_new))
 
 # renameFiles("/home/neel/Pictures/testOffline/")
